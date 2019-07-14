@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>gps</title>
+</head>
+<body>
+    <input type="button" value="登录" onclick="testLogin()" />
+    <input type="button" value="获取GPS" onclick="testGPS(true)" />
+    <input type="button" value="停止获取GPS" onclick="testGPS(false)" />
+    <div id="msg"></div>
+</body>
+</html>
+<script type="text/javascript" src="http://127.0.0.1:8081/js/jsw.js"></script>
+<script type="text/javascript">
+    window.onload = function () {
+        jSW.swInit({
+            url: "http://127.0.0.1:8081", // bv_nginx.exe服务器地址
+            calltype: jSW.CallProtoType.AUTO, // AUTO: IE优先使用OCX, 如果希望IE仍然使用HTTP通信, 请使用jSW.CallProtoType.HTTP
+        });
+    }
+    window.onbeforeunload = function () {
+        jSW.swDeInit();
+    }
+
+    var session = null;
+    function testLogin() {
+    document.getElementById('msg').innerHTML = '';
+        if (session) { delete session; }
+        session = new jSW.SWSession({
+            server: '127.0.0.1', // 如果是jSW.CallProtoType.OCX方式，这里需要填写具体的IP
+            port: 9701,
+            onopen: function (sess) {
+                    sess.swLogin({
+                        user: 'admin',
+                        password: '123456'
+                    });
+                }
+        });
+
+        // 注册事件的回调函数
+        session.swAddCallBack('login', sessionCallback);
+        session.swAddCallBack('logout', sessionCallback);
+    }
+
+    function testLogout() {
+        if (session) {
+            session.swLogout();
+        }
+    }
+
+    function sessionCallback(sender, event, json) {
+        var info = '';
+        if ('login' == event) {
+            info += '登录';
+        } else if ('logout' == event) {
+            info += '退出';
+        }
+
+        if (json.code == jSW.RcCode.RC_CODE_S_OK) {
+            info += '成功';
+        } else {
+            info += '失败, error code: ' + json.code;
+        }
+
+        document.getElementById('msg').innerHTML = info + '<br/><textarea rows="18" cols="100" readonly="readonly"> ' + JSON.stringify(json, null, 4) + '</textarea>';
+    }
+
+    function testGPS(isGetGps) {
+
+        if (null == session) {
+            alert('无效的连接');
+            return;
+        }
+
+        var gps = session.swGetPuChanel('PU_55AA0000', 65536);
+        if (null == gps) {
+            alert('没有该设备通道');
+            return ;
+        }
+
+        if (isGetGps) {
+            gps.swOpen({
+                repeat: 10,
+                interval: 2000,
+                callback: OnGetGPS,
+            });
+        } else {
+            gps.swClose();
+        }
+    }
+
+    function OnGetGPS(options, response) {
+        if (response.emms.code == jSW.RcCode.RC_CODE_S_OK) {
+            var data = response.gps;
+            document.getElementById('msg').innerHTML = 'orientationstate:' + data.orientationstate
+            + '<br/>long:' + data.long
+            + '<br/>lat:' + data.lat
+            + '<br/>height:' + data.height
+            + '<br/>speed:' + data.speed
+            + '<br/>time:' + data.time.year + '-' + data.time.month + '-' + data.time.day + ' ' + data.time.hour + ':' + data.time.minute + ':' + data.time.second
+            + '<br/>starcount:' + data.starcount;
+        }
+    }
+</script>

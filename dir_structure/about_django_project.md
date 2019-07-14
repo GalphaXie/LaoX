@@ -1,0 +1,25 @@
+项目总工程
+- backend [后端工程目录]
+    - 工程核心代码 [核心代码目录]
+        - apps 所有应用
+            - _\_init\_\_.py
+            - xxx
+            - xxx
+            - xxx
+        - libs 第三方库代码
+        - utils 自己封装的类或者方法
+        - settings
+            - _\_init\_\_.py
+            - dev.py
+            - prod.pv
+        - 
+    - celery_tasks
+    - doc  
+    - logs
+    - scripts  (sql， python， shell 等可以独立使用的文件)
+    - manage.py
+    - requirements.txt
+    - .ig
+- frontend
+- .gitignore
+- README.md

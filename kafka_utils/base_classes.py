@@ -50,7 +50,7 @@ class MyKafkaConsumer(object):
 
     """
 
-    def __int__(self, topic_dict: dict):
+    def __init__(self, topic_dict: dict):
         self.consumer = self.init_consumer()
         self.topic_dict = topic_dict
 
