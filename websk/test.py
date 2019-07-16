@@ -39,11 +39,12 @@ async def startup(uri, header):
             time.sleep(5)
 
             mes = await converse.receive()
+            print(mes)
 
-            mes_dict = json.loads(mes.decode("utf-8"))
-            print(mes_dict)
+            # mes_dict = json.loads(mes.decode("utf-8"))
+            # print(mes_dict)
             # topic = mes_dict["test1"]
-            print('{time}-Client receive: {rec}'.format(time=datetime.now().strftime('%Y-%m-%d %H:%M:%S'), rec=mes_dict))
+            print('{time}-Client receive: {rec}'.format(time=datetime.now().strftime('%Y-%m-%d %H:%M:%S'), rec=mes))
             time.sleep(random.randint(0, 10))
 
 

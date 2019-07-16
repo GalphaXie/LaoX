@@ -4,7 +4,7 @@ import socket
 def main(server_ip, server_port):
     # 1.创建upd通信套接字
     udp_server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    # 2.绑定ip和端口
+    # 2.绑定ip和port , 注意是个元祖
     udp_server.bind((server_ip, server_port))
     # 3.接收消息
     recv_data, addr = udp_server.recvfrom(1024)
@@ -65,6 +65,10 @@ if __name__ == "__main__":
     - 编码|解码: utf-8 (统一)
 - encode("utf-8", errors="ignore")
     - 可以增加参数 errors="ignore" 或 error="strict"
+- 案例：
+    bytes.decode(encoding="utf-8", errors="strict")
+    str.encode(encoding="utf-8", errors="strict")
+    - 其中的encoding是指在解码编码过程中使用的编码(此处指“编码方案”是名词)，errors是指错误的处理方案
 
 5.sendto(bytes_data, addr)
 - bytes_data: 第一个参数是发送的数据，必须是 bytes 类型的数据；
