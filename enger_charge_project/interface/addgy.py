@@ -70,6 +70,9 @@ class Ui_Form(object):
         self.pushButton.setText(_translate("Form", "返回"))
         self.pushButton_2.setText(_translate("Form", "保存"))
 
+
+
+
 if __name__=="__main__":
     import sys
     app=QtWidgets.QApplication(sys.argv)
