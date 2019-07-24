@@ -6,6 +6,8 @@
 #
 # WARNING! All changes made in this file will be lost!
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QMessageBox
+
 from enger_charge_project.origin.param import *
 
 start_time = None
@@ -69,6 +71,12 @@ class Ui_Form(QtWidgets.QWidget):
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
 
+        # 返回按钮, 触发窗口关闭
+        self.pushButton.clicked.connect(self.close)
+
+        # 保存按钮，触发保存操作
+        self.pushButton_2.clicked.connect(self.save_tech)
+
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "工艺界面"))
@@ -92,11 +100,16 @@ class Ui_Form(QtWidgets.QWidget):
         print(gy_name)
         # TODO 将这些数据进行查找操作
 
-        self.write_to_csv(start_time, end_time, gy_name)
+        # self.write_to_csv()  # start_time, end_time, gy_name
 
-    def write_to_csv(self, start_time, end_time, gy_name):
-        """讲工艺名称， 开始时间， 结束时间写入csv文件保存"""
+    def save_tech(self):
+        QMessageBox.about(self, "保存", "保存成功")
+        self.write_to_csv()
 
+    def write_to_csv(self):
+        # start_time, end_time, gy_name
+        """将工艺名称， 开始时间， 结束时间写入csv文件保存"""
+        print("write_to_csv...")
 
         pass
 
