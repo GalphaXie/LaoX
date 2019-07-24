@@ -78,7 +78,8 @@ class MyWebSocketServer(WebSocket):
             try:
                 data_dict = json.loads(self.data)
             except Exception as e:
-                print("错误日志：%s" % e)
+                # print("错误日志：%s" % e)
+                pass
             else:
                 if data_dict.get("heart", None) == "ping":
                     try:
