@@ -26,8 +26,9 @@ class WSGIServer(object):
         request = new_socket.recv(1024).decode("utf-8")
         # print(">>>"*50)
         # print(request)
-
-        request_lines = request.splitlines()
+        request_lines = request.splitlines()  # 当客户端主动关闭， 会收到空字符串并解阻塞； 这里会生成空列表
+        if not request_lines:
+            return
         print(request_lines[0])
 
         # GET /index.html HTTP/1.1

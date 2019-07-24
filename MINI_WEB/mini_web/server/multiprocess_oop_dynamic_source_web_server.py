@@ -31,10 +31,9 @@ class WSGIServer(object):
         # print("-" * 100)
         # print(request)
 
-        if not request:
-            new_socket.close()
+        request_lines = request.splitlines()  # 当客户端主动关闭， 会收到空字符串并解阻塞； 这里会生成空列表
+        if not request_lines:
             return
-        request_lines = request.splitlines()
         # print(request_lines)
 
         # GET /index.html HTTP/1.1

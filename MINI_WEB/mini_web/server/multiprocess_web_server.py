@@ -17,10 +17,9 @@ def service_client(new_socket):
     request = new_socket.recv(1024).decode('utf-8')
     # print("-" * 100)
     # print(request)
-    if not request:
-        new_socket.close()
+    request_lines = request.splitlines()  # 当客户端主动关闭， 会收到空字符串并解阻塞； 这里会生成空列表
+    if not request_lines:
         return
-    request_lines = request.splitlines()
     # print(request_lines)
 
     # GET /index.html HTTP/1.1
@@ -56,7 +55,7 @@ def service_client(new_socket):
         # 将response body 发送给服务器
         new_socket.send(html_content)
 
-    # 这里必须再关闭一次， 底层文件描述符
+    # 这里必须再关闭一次， 底层:文件描述符
     new_socket.close()
 
 
@@ -68,7 +67,7 @@ def main():
     # 2.绑定ip和port
     local_addr = ("", 8888)
     listen_server.bind(local_addr)
-    # 3.主动变被动
+    # 3.主动变被动, 并制定队列的长度
     listen_server.listen(128)
 
     while True:
@@ -79,6 +78,7 @@ def main():
         p = multiprocessing.Process(target=service_client, args=(new_socket, ))
         p.start()
         # 进程类实现的并发服务器，必须要在这里也new_socket.close一次； 原因：文件描述符 fd
+        # 子进程已经复制了父进程的套接字等资源，所以父进程调用close不会将他们对应的这个链接关闭的
         new_socket.close()
 
     # 关闭监听套接字

@@ -28,12 +28,9 @@ class WSGIServer(object):
         # 1.接收浏览器发送过来的请求， 即HTTP请求
         # GET / HTTP/1.1
         request = new_socket.recv(1024).decode('utf-8')
-        # print("-" * 100)
-        # print(request)
-        if not request:
-            new_socket.close()
+        request_lines = request.splitlines()  # 当客户端主动关闭， 会收到空字符串并解阻塞； 这里会生成空列表
+        if not request_lines:
             return
-        request_lines = request.splitlines()
         file_name = ""
         ret = re.match(r'[^/]+(/[^ ]*)', request_lines[0])
         if ret:

@@ -7,11 +7,10 @@ import multiprocessing
 def handle_client(new_socket):
     """为客户端服务"""
     # 1.接收客户端请求
-    recv_data = new_socket.recv(1024).decode("utf-8")
+    request = new_socket.recv(1024).decode("utf-8")
     # print(recv_data)
-    request_lines = recv_data.splitlines()
+    request_lines = request.splitlines()  # 当客户端主动关闭， 会收到空字符串并解阻塞； 这里会生成空列表
     if not request_lines:
-        new_socket.close()
         return
     print(request_lines)
     ret = re.match(r'[^/]+(/[^ ]*)', request_lines[0])
