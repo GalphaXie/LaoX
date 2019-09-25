@@ -41,23 +41,24 @@ STATICFILES_DIRS = [
 1.默认情况下，Django会将上传的图片保存在本地服务器上，需要配置保存的路径。
 2.一般项目本身和业务结合较多的文件, 会配置一个 `MEDIA_ROOT`参数结合 BASE_DIR 来形成一个完整的路径,单独放置在 static 文件目录下;
 3.django 会在global_settins中, 默认: MEDIA_ROOT = '' 
+4.常见在 ImageField 字段中 `upload_to` 相关联
 ### 2.自定义django的文件存储系统(类)
-- 1. 继承: django.core.files.storage.Storage
-- 2. Storage 继承 object类, 而且没有 `__init__.py`, 所以实例化的时候不需要参数,也就是说任何配置都应该从django.conf.settings中获取
+- 1.继承: django.core.files.storage.Storage
+- 2.Storage 继承 object类, 而且没有 `__init__.py`, 所以实例化的时候不需要参数,也就是说任何配置都应该从django.conf.settings中获取
 ```python
 from django.conf import settings
 from django.core.files.storage import Storage
 
-class FastDFSStorage(Storage):
+class MyStorage(Storage):
     def __init__(self, base_url=None, client_conf=None):
         if base_url is None:
-            base_url = settings.FDFS_URL
+            base_url = settings.File_SERVER_URL
         self.base_url = base_url
         if client_conf is None:
-            client_conf = settings.FDFS_CLIENT_CONF
+            client_conf = settings.File_CLIENT_CONF
         self.client_conf = client_conf
 ```
-- 3. 存储类中必须实现_open()和_save()方法，以及任何后续使用中可能用到的其他方法。
+- 3.存储类中必须实现_open()和_save()方法，以及任何后续使用中可能用到的其他方法。
 > _open(name, mode='rb')
 被Storage.open()调用，在打开文件时被使用。
 _save(name, content)
@@ -75,12 +76,12 @@ size(name)
 返回name文件的总大小
 注意，并不是这些方法全部都要实现，可以省略用不到的方法。
 
-- 4. 需要为存储类添加django.utils.deconstruct.deconstructible装饰器
+- 4.需要为存储类添加django.utils.deconstruct.deconstructible装饰器
 
 ### 3.配置 自定义的文件存储类
-- 1. django 默认在global_settings中配置了: `DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'`
-- 2. 我们这里需要 自己配置 DEFAULT_FILE_STORAGE
-- 3. 如果是保存到服务器,我们可能还需要配置一些 url port path 等文件存储服务器信息.
+- 1.django 默认在global_settings中配置了: `DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'`
+- 2.我们这里需要 自己配置 DEFAULT_FILE_STORAGE
+- 3.如果是保存到服务器,我们可能还需要配置一些 url port path 等文件存储服务器信息.
 
 ### 4.其他静态文件服务器:
 - FastDFS

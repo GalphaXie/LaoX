@@ -5,6 +5,8 @@ from collections import deque
 from collections import defaultdict
 # 字典没有所需要的键的时候返回默认值
 from collections import OrderedDict
+# 统计序列中元素出现的次数
+from collections import Counter
 
 # 用于： 表示一个点， 限制只有两个参数
 Point = namedtuple("point", ['latitude', 'longitude'])
@@ -72,3 +74,11 @@ Out[11]: OrderedDict([('a', 1), ('b', 2), ('c', 3)])
 # 注意： OrderDict是按照插入的顺序排列， 不是key本身排序：
 
 
+# 统计序列中元素出现的次数
+
+s3 = "kjalfj;ldsjafl;hdsllfdhg;lahfbl;hl;ahlf;h"
+
+# from collections import Counter
+
+r = Counter(s3)
+print(r)

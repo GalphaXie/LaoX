@@ -35,11 +35,7 @@ if __name__ == '__main__':
     print(getattr(B, "b", "null"))
     print(getattr(B, "c", "null"))
 
-
     delattr(B, 'b')
     # delattr(B, 'b')  # 如果删除的属性不存在， 会报错 AttributeError
 
     print(getattr(B, "b", "B null"))
-
-
-
