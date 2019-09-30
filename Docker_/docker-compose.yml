@@ -1,0 +1,49 @@
+version: '3.7'
+
+services:
+  web:
+    build: .
+    expose:
+      - "8001"
+    command: python manage.py runserver 0.0.0.0:8001
+    volumes:
+      - .:/code/SH_backend
+      - /code/logs:/code/SH_backend/logs
+    depends_on:
+      - db
+      - redis
+    links:
+      - db
+      - redis
+  db:
+    image: mysql:5.7
+    restart: always
+    expose:
+      - 3306
+    ports:
+      - 8300:3306
+    environment:
+      MYSQL_DATABASE: db_spic
+      MYSQL_USER: wurenji
+      MYSQL_ROOT_PASSWORD: wurenji
+    volumes:
+      - ./custommysql.cnf:/etc/mysql/conf.d/custom.cnf
+      - /code/data:/var/lib/mysql
+  redis:
+    image: redis
+    restart: always
+    expose:
+      - 6379
+  celery:
+    build: .
+    command: celery -A spic_backend.mycelery worker -l info >> /code/SH_backend/logs/celery_server.log 2>&1 &
+    depends_on:
+      - web
+      - redis
+  kafka_listen:
+    build: .
+    command: python script_kafka/task_recv_consumer.py >> /code/SH_backend/logs/kafka_listen.log 2>&1 &
+  socket_listen:
+    build: .
+    command: python script_socket/socket_listen.py >> /code/SH_backend/logs/socket_listen.log 2>&1 &
+
