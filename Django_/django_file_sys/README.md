@@ -1,5 +1,5 @@
 ### django 静态文件
-#### 2.静态文件开发环境配置
+#### 1.静态文件开发环境配置
 >   项目中的CSS、图片、js都是静态文件。一般会将静态文件放到一个单独的目录中，以方便管理。在html页面中调用时，也需要指定静态文件的路径，Django中提供了一种解析的方式配置静态文件路径。静态文件可以放在项目根目录下，也可以放在应用的目录下，由于有些静态文件在项目中是通用的，所以推荐放在项目的根目录下，方便管理。
 为了提供静态文件，需要配置两个参数：
 - 先创建目录: static_files
@@ -86,6 +86,56 @@ size(name)
 ### 4.其他静态文件服务器:
 - FastDFS
 - OSS
+### 5.自定义文件存储系统, 可以参考官方关于 FileSystemStorage 的实现方法
+
+### 6.还可以修改 upload_to = "" , 来制定文件保存的位置. 更复杂的还可以通过 lambda , def func()-> str 等方式来实现
+
+### 7.django 在 FileField 类中通过 `self.storage = storage or default_storage` 实现 default_storage 指定默认文件存储系统
+```python
+class FileField(Field):
+
+    # The class to wrap instance attributes in. Accessing the file object off
+    # the instance will always return an instance of attr_class.
+    attr_class = FieldFile
+
+    # The descriptor to use for accessing the attribute off of the class.
+    descriptor_class = FileDescriptor
+
+    description = _("File")
+
+    def __init__(self, verbose_name=None, name=None, upload_to='', storage=None, **kwargs):
+        self._primary_key_set_explicitly = 'primary_key' in kwargs
+
+        self.storage = storage or default_storage
+        self.upload_to = upload_to
+
+        kwargs.setdefault('max_length', 100)
+        super().__init__(verbose_name, name, **kwargs)
+    # 略
+```
+
+
+### Django REST framework 简介
+1. 在序列化与反序列化时，虽然操作的数据不尽相同，但是执行的过程却是相似的，也就是说这部分代码是可以复用简化编写的。
+2. 在开发REST API的视图中，虽然每个视图具体操作的数据不同，但增、删、改、查的实现流程基本套路化，所以这部分代码也是可以复用简化编写的：
+- 增：校验请求数据 -> 执行反序列化过程 -> 保存数据库 -> 将保存的对象序列化并返回
+- 删：判断要删除的数据是否存在 -> 执行数据库删除
+- 改：判断要修改的数据是否存在 -> 校验请求的数据 -> 执行反序列化过程 -> 保存数据库 -> 将保存的对象序列化并返回
+- 查：查询数据库 -> 将数据序列化并返回
+3. Django REST framework可以帮助我们简化上述两部分的代码编写，大大提高REST API的开发速度。
+
+4. Django REST framework 框架是一个用于构建Web API 的强大而又灵活的工具。通常简称为DRF框架 或 REST framework。DRF框架是建立在Django框架基础之上，由Tom Christie大牛二次开发的开源项目。
+
+5. 特点
+- 提供了定义序列化器Serializer的方法，可以快速根据 Django ORM 或者其它库自动序列化/反序列化；
+- 提供了丰富的类视图、Mixin扩展类，简化视图的编写；
+- 丰富的定制层级：函数视图、类视图、视图集合到自动生成 API，满足各种需要；
+- 多种身份认证和权限认证方式的支持；
+- 内置了限流系统；
+- 直观的 API web 界面；
+- 可扩展性，插件丰富
+
+
 
 
 
