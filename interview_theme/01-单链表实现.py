@@ -155,18 +155,19 @@ class SingleLinkList(object):
             return False
 
     def reverse(self):
+        """单向链表的反转"""
         cur = self.__head
-        temp = None
+        _ = None
         while cur is not None:
             pre = cur
             cur = cur.next
             if pre == self.__head:
                 pre.next = None
             else:
-                pre.next = temp
-            temp = pre
+                pre.next = _
+            _ = pre
         else:
-            self.__head = temp
+            self.__head = _
             # self.travel()
             return self
 
