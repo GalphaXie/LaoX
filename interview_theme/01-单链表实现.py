@@ -169,7 +169,7 @@ class SingleLinkList(object):
         else:
             self.__head = _
             # self.travel()
-            return self
+        return self
 
 
 # # 创建单个节点对象
