@@ -118,7 +118,7 @@ class SingleLinkList(object):
             node = Node(obj)
             # 借助游标对象
             cur = self.__head
-            for i in range(index-1):
+            for i in range(index - 1):
                 cur = cur.next
             node.next = cur.next
             cur.next = node
@@ -153,6 +153,22 @@ class SingleLinkList(object):
                 cur = cur.next
         else:
             return False
+
+    def reverse(self):
+        cur = self.__head
+        temp = None
+        while cur is not None:
+            pre = cur
+            cur = cur.next
+            if pre == self.__head:
+                pre.next = None
+            else:
+                pre.next = temp
+            temp = pre
+        else:
+            self.__head = temp
+            # self.travel()
+            return self
 
 
 # # 创建单个节点对象
@@ -234,3 +250,6 @@ if __name__ == '__main__':
     print(sll.search("lisi"))  # True
     print(sll.search(10000))  # False
 
+    # 单向链表反转
+    temp = sll.reverse()
+    temp.travel()
