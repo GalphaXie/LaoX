@@ -8,6 +8,7 @@
 
 class Node(object):
     """抽象出节点类"""
+
     def __init__(self, obj):
         self.pre = None  # 指向上一个节点,初始为None
         self.data = obj  # 指向
@@ -16,6 +17,7 @@ class Node(object):
 
 class DoubleLinkList(object):
     """双向链表(双链表)"""
+
     def __init__(self, head_node=None):
         """对于链表而言,只需要保存其一个节点即可,这里还是保存头节点"""
         self.__head = head_node
@@ -128,14 +130,69 @@ class DoubleLinkList(object):
     def reverse(self):
         """双链表反转"""
         cur = self.__head
-        while cur is not None:
-            # 如果只有一个元素
-            if self.length() == 1:
-                break
-            else:
-                if cur.pre is None:
-                    cur.next.pre = cur
-                    cur.next = None
+        # 如果cur 是空链表,不做任何处理;
+        if not cur:
+            return
 
-            cur = cur.next
+        cur.pre = cur.next
+        cur.next = None
 
+        while cur.pre is not None:
+            # 先处理pre,再处理next
+            cur.pre.pre = cur.pre.next
+            cur.pre.next = cur
+            cur = cur.pre
+
+        self.__head = cur
+
+        return self
+
+
+if __name__ == '__main__':
+    dll = DoubleLinkList()
+
+    print(dll.is_empty())
+    print(dll.length())
+
+    dll.add(100)
+    print(dll.is_empty())
+    print(dll.length())
+    dll.travel()
+
+    dll.add(200)
+    print(dll.is_empty())
+    print(dll.length())
+    dll.travel()
+
+    dll.append("zhangsan")
+    print(dll.length())
+    dll.travel()
+
+    dll.append("lisi")
+    print(dll.length())
+    dll.travel()
+
+    dll.insert(-5, "he")
+    dll.travel()
+
+    dll.insert(1, "her")
+    dll.travel()
+
+    dll.insert(10, "she")
+    dll.travel()
+
+    dll.remove("zhangsan")
+    dll.travel()
+    dll.remove("he")
+    dll.remove("she")
+    dll.remove("her")
+    dll.travel()
+
+    # dll.remove(10000)
+
+    print(dll.search("lisi"))  # True
+    print(dll.search(10000))  # False
+
+    # 双向链表反转
+    temp = dll.reverse()
+    temp.travel()
